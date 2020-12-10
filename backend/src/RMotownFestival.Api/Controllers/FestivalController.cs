@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
-
+using RMotownFestival.Api.DAL;
 using RMotownFestival.Api.Data;
 using RMotownFestival.Api.Domain;
 
@@ -13,6 +13,15 @@ namespace RMotownFestival.Api.Controllers
     [ApiController]
     public class FestivalController : ControllerBase
     {
+        private readonly MotownDbContext _dbContext;
+        //private readonly TelemetryClient _telemetryClient;
+
+        public FestivalController(MotownDbContext dbContext, TelemetryClient telemetryClient)
+        {
+            _dbContext = dbContext;
+            //_telemetryClient = telemetryClient;
+        }
+
         [HttpGet("LineUp")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Schedule))]
         public ActionResult GetLineUp()
@@ -22,8 +31,13 @@ namespace RMotownFestival.Api.Controllers
 
         [HttpGet("Artists")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<Artist>))]
-        public ActionResult GetArtists()
+        public ActionResult GetArtists(bool? withRatings)            
         {
+            //var artists = _dbContext.Artists.ToList();
+            //if (withRatings.HasValue && withRatings.Value)
+            //    _telemetryClient.TrackEvent($"List of artists with ratings");
+            //else
+            //    _telemetryClient.TrackEvent($"List of artists without ratings");
             return Ok(FestivalDataSource.Current.Artists);
         }
 
